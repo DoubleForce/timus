@@ -18,44 +18,165 @@ import java.util.Scanner;
         Анологично для слонов, коней и ладей.
 
         Проблема: как типу фигуры в board[][] выйти на сам объект фигуры да ещё и прописать метод поедания если нужно?
-        
-        P.S. ООП подход представляется довольно сложным, но интересным. Не хочется полностью от него отказываться.
 
+        Алгоритм работы:
+        1. dataEnter() получает данные и формирует board[][] и moveList[][][]
+        2. initialize() создаёт фигуры по board[][]
  */
-public class Solution {
+public class task1380 {
+    //Входящий поток данных
     public static int board[][] = new int[9][9];
     public static int P = 0;
     public static boolean isWhiteMove;
     public static int moveList[][][] = new int[61][2][2];
 
-    public static ArrayList<Peshka> peshkaList = new ArrayList<Peshka>(); // Пешки, стоящие на доске
+    //Объекты
+    public static Figure figure[][] = new Figure[9][9]; //Отображение board[][] на множество оъектов
+    public static ArrayList<Pawn> pawnsList = new ArrayList<Pawn>(); // Пешки, стоящие на доске
+    public static ArrayList<Knight> knightsList = new ArrayList<Knight>(); // Кони, стоящие на доске
+    public static ArrayList<Bishop> bishopsList = new ArrayList<Bishop>(); // Слоны, стоящие на доске
+    public static ArrayList<Rook> rooksList = new ArrayList<Rook>(); // Ладьи, стоящие на доске
 
     public static void main(String[] args) throws Exception{
         dataEnter(); //Получает данные
         initialize(); //Создаёт фигуры по board[][]
         int i = 1; //какой-то ход
         move(i);//Делает ход фигурой согласно i ходу в moveList
+
+
     }
 
+    public static class Figure{
+        private boolean isEmpty = false;
+        public Figure(){
 
+        }
 
-    public static class Peshka{
-        public int x;
-        public int y;
-        public boolean color;
-        public Peshka(boolean color, int x, int y){
+        public static Figure getFigure(int x,int y){
+            Figure result = new Figure();
+
+            if (Math.abs(board[x][y]) == 1){
+                result = pawnsList.get(getIofPawn(x,y));
+            }
+            else if (Math.abs(board[x][y]) == 2){
+
+            }
+
+            return result;
+        }
+    }
+
+    public static class Pawn extends Figure{
+        protected int x;
+        protected int y;
+        protected boolean color; //true - белый
+        public Pawn(boolean color, int x, int y){
             this.color = color;
             this.x = x;
             this.y = y;
         }
         //Проверка корректности ходов для пешки, король не должен быть под ударом после хода пешки!
+        public boolean correct(int x1, int y1, int x2, int y2){
+            return false;
+        }
+
+        public void move(int i){
+
+            pawnsList.get(getIofPawn(moveList[i][0][0],moveList[i][0][1])).x = moveList[i][1][0];
+            pawnsList.get(getIofPawn(moveList[i][0][0],moveList[i][0][1])).y = moveList[i][1][1];
+        }
         //Метод поедания другой фигуры пешкой
     }
 
-    public static int getIofPeshka(int x, int y){ //Заведомо известно, что пешка находится по координатам (x,y) по broad
+    public static class Knight extends Figure{
+        protected int x;
+        protected int y;
+        protected boolean color; //true - белый
+        public Knight(boolean color, int x, int y){
+            this.color = color;
+            this.x = x;
+            this.y = y;
+        }
+        //Проверка корректности ходов для коня, король не должен быть под ударом после хода коня!
+        public boolean correct(int x1, int y1, int x2, int y2){
+            return false;
+        }
+
+        //Метод поедания другой фигуры конем
+    }
+
+    public static class Bishop extends Figure{
+        protected int x;
+        protected int y;
+        protected boolean color; //true - белый
+        public Bishop(boolean color, int x, int y){
+            this.color = color;
+            this.x = x;
+            this.y = y;
+        }
+        //Проверка корректности ходов для слона, король не должен быть под ударом после хода слона!
+        public boolean correct(int x1, int y1, int x2, int y2){
+            return false;
+        }
+
+        //Метод поедания другой фигуры слоном
+    }
+
+    public static class Rook extends Figure{
+        protected int x;
+        protected int y;
+        protected boolean color; //true - белый
+        public Rook(boolean color, int x, int y){
+            this.color = color;
+            this.x = x;
+            this.y = y;
+        }
+        //Проверка корректности ходов для ладьи, король не должен быть под ударом после хода ладьи!
+        public boolean correct(int x1, int y1, int x2, int y2){
+            return false;
+        }
+
+        //Метод поедания другой фигуры ладьей
+    }
+
+    public static class Queen extends Figure{
+        protected int x;
+        protected int y;
+        protected boolean color; //true - белый
+        public Queen(boolean color, int x, int y){
+            this.color = color;
+            this.x = x;
+            this.y = y;
+        }
+        //Проверка корректности ходов для королевы, король не должен быть под ударом после хода королевы!
+        public boolean correct(int x1, int y1, int x2, int y2){
+            return false;
+        }
+
+        //Метод поедания другой фигуры ладьей
+    }
+
+    public static class King extends Figure{
+        protected int x;
+        protected int y;
+        protected boolean color; //true - белый
+        public King(boolean color, int x, int y){
+            this.color = color;
+            this.x = x;
+            this.y = y;
+        }
+        //Проверка корректности ходов для королевы, король не должен быть под ударом после хода королевы!
+        public boolean correct(int x1, int y1, int x2, int y2){
+            return false;
+        }
+
+        //Метод поедания другой фигуры ладьей
+    }
+
+    public static int getIofPawn(int x, int y){ //Заведомо известно, что пешка находится по координатам (x,y) по broad
         int result = 0;
-        for(int i = 1; i<=peshkaList.size(); i++){
-            if (peshkaList.get(i).x == x & peshkaList.get(i).y == y){
+        for(int i = 1; i<=pawnsList.size(); i++){
+            if (pawnsList.get(i).x == x & pawnsList.get(i).y == y){
                 result = i;
             }
         }
@@ -68,21 +189,48 @@ public class Solution {
         //проверяем есть ли на moveList[i][1][0] moveList[i][1][1] фигура, которую съедят и если да, то делаем метод поедания.
         //Меняем борд
         //Ниже пример движения пешки
-        peshkaList.get(getIofPeshka(moveList[i][0][0],moveList[i][0][1])).x = moveList[i][1][0];
-        peshkaList.get(getIofPeshka(moveList[i][0][0],moveList[i][0][1])).y = moveList[i][1][1];
+
     }
+
+    //Создание объектов и матрицы объектов, как отображение board[][]
 
     public static void initialize(){
         for(int i = 1; i<=8; i++)
             for(int j = 1; j<=8; j++){
                 if (Math.abs(board[j][i]) == 1){
-                    if (board[j][i]>0)
-                        peshkaList.add(new Peshka(true,j,i));
-                    else
-                        peshkaList.add(new Peshka(false,j,i));
+                    if (board[j][i]>0) {
+                        pawnsList.add(new Pawn(true, j, i));
+                        figure[j][i] = new Pawn(true, j, i);
+                    }
+                    else if (board[j][i]<0){
+                        pawnsList.add(new Pawn(false, j, i));
+                        figure[j][i] = new Pawn(false, j, i);
+                    }
+                    else {
+                        figure[j][i] = new Figure();
+                        figure[j][i].isEmpty = true;
+                    }
                 }
-            }
+        }
     }
+
+    //Проверки
+
+    public boolean isFigure(int x, int y){
+        boolean result = false;
+        if (Math.abs(board[x][y]) != 0)
+            result = true;
+        return result;
+    }
+
+    public boolean isKing(int x, int y){ //Короля нужно проверить на шах, мат и пат. Поэтому нужно знать, что эта фигура точно король.
+        boolean result = false;
+        if (Math.abs(board[x][y]) == 6)
+            result = true;
+        return result;
+    }
+
+    //Методы ввода и обработки данных
 
     public static void dataEnter(){
         Scanner sc = new Scanner(System.in);
